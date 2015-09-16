@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="glfx.js"></script>
+    <script src="main.js"></script>
+    <style>
+      script[contenteditable] {
+        display: block;
+        box-sizing: border-box;
+        width: 800px;
+        padding: 0.6em;
+        color: #eee;
+        background-color: #222;
+        white-space: pre;
+        font-family: mono;
+      }
+      #frag.error {
+        background-color: #600;
+      }
+    </style>
+  </head>
+  <body onload="start()">
+    <canvas id="glcanvas" width="800" height="400">
+      Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.
+    </canvas>
+    <script id="frag" type="text/x-glsl" contenteditable>
+precision mediump float;
+
+#define rgb(r, g, b) vec4(r, g, b, 1)
+
+#define red   rgb(0.8, 0.0, 0.0)
+#define black rgb(0.0, 0.0, 0.0)
+#define blue  rgb(0.0, 0.0, 0.4)
+#define white rgb(1.0, 1.0, 1.0)
+
+void main() {
+  float x = gl_FragCoord.x;
+  float y = gl_FragCoord.y;
+ 
+  gl_FragColor =
+    (x > 200.0 + y) && (x < 600.0 - y) ? red :
+    x < y                              ? black :
+    x > 800.0 - y                      ? blue :
+                                         white;
+}
+    </script>
+  </body>
+</head>
