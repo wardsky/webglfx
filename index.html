@@ -25,24 +25,19 @@
       Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.
     </canvas>
     <script id="frag" type="text/x-glsl" contenteditable>
-precision mediump float;
-
-#define rgb(r, g, b) vec4(r, g, b, 1)
-
 #define red   rgb(0.8, 0.0, 0.0)
 #define black rgb(0.0, 0.0, 0.0)
 #define blue  rgb(0.0, 0.0, 0.4)
 #define white rgb(1.0, 1.0, 1.0)
 
-void main() {
-  float x = gl_FragCoord.x;
-  float y = gl_FragCoord.y;
- 
-  gl_FragColor =
-    (x > 200.0 + y) && (x < 600.0 - y) ? red :
-    x < y                              ? black :
-    x > 800.0 - y                      ? blue :
-                                         white;
+vec4 paint(float x, float y) {
+  if ((x > 200.0 + y) && (x < 600.0 - y))
+    return red;
+  if (x < y)
+    return black;
+  if (x > 800.0 - y)
+    return blue;
+  return white;
 }
     </script>
   </body>

@@ -4,11 +4,11 @@ var glfx = {
 
   program: null,
 
-  compileShader: function (type, shaderStr) {
+  compileShader: function (type, shaderSrc) {
     var shader;
 
     shader = gl.createShader(type);
-    gl.shaderSource(shader, shaderStr);
+    gl.shaderSource(shader, shaderSrc);
     gl.compileShader(shader);
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
@@ -35,11 +35,11 @@ var glfx = {
       throw "Failed to link program";
   },
 
-  buildProgram: function (fragShaderStr, vertShaderStr) {
+  buildProgram: function (fragShaderSrc, vertShaderSrc) {
     var fragShader, vertShader;
 
-    fragShader = glfx.compileShader(gl.FRAGMENT_SHADER, fragShaderStr);
-    vertShader = glfx.compileShader(gl.VERTEX_SHADER, vertShaderStr);
+    fragShader = glfx.compileShader(gl.FRAGMENT_SHADER, fragShaderSrc);
+    vertShader = glfx.compileShader(gl.VERTEX_SHADER, vertShaderSrc);
     glfx.linkProgram(fragShader, vertShader);
   },
 
@@ -57,10 +57,24 @@ var glfx = {
     gl.enableVertexAttribArray(glfx.ATTR_VPOSITION);
   },
 
-  setup: function (fragShaderStr) {
-    const vertShaderStr = "attribute vec4 vPosition; void main() { gl_Position = vPosition; }";
+  setup: function (shaderStr) {
 
-    glfx.buildProgram(fragShaderStr, vertShaderStr);
+    const fragShaderSrc = [
+      "#line 1 0",
+      "precision mediump float;",
+      "#define rgb(r, g, b) vec4(r, g, b, 1)",
+      "vec4 paint(float, float);",
+      "void main() { gl_FragColor = paint(gl_FragCoord.x, gl_FragCoord.y); }",
+      "#line 1 1",
+      shaderStr
+    ].join('\n');
+
+    const vertShaderSrc = [
+      "attribute vec4 vPosition;",
+      "void main() { gl_Position = vPosition; }"
+    ].join('\n');
+
+    glfx.buildProgram(fragShaderSrc, vertShaderSrc);
     gl.useProgram(glfx.program);
     glfx.loadVertices();
   },
