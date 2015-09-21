@@ -65,11 +65,31 @@ function Glfx(gl) {
 
     this.program = buildProgram(fragShaderSrc, vertShaderSrc);
     gl.useProgram(this.program);
+
+    this.uniformDirectory = {};
+
     loadVertices();
   };
 
-  this.getUniformLocation = function (name) {
-    return gl.getUniformLocation(this.program, name);
+  this.bindUniform = function (name, type, binding) {
+    var loc = gl.getUniformLocation(this.program, name);
+    if (loc) {
+      this.uniformDirectory[name] = {
+        loc: loc,
+        type: type,
+        binding: binding
+      };
+    }
+  };
+
+  this.updateUniforms = function () {
+    for (var name in this.uniformDirectory) {
+      var uniform = this.uniformDirectory[name];
+      switch (uniform.type) {
+      case gl.FLOAT:
+        gl.uniform1f(uniform.loc, uniform.binding());
+      }
+    }
   };
 
   this.redraw = function () {

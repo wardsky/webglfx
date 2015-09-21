@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="glfx.js"></script>
+    <script src="main.js"></script>
+    <style>
+      script[contenteditable] {
+        display: block;
+        box-sizing: border-box;
+        width: 800px;
+        padding: 0.6em;
+        color: #eee;
+        background-color: #222;
+        white-space: pre;
+        font-family: mono;
+      }
+      #shader.error {
+        background-color: #600;
+      }
+    </style>
+    <script type="text/javascript">
+      window.onload = function () {
+        var canvas = document.getElementById("glcanvas");
+        var shaderScript = document.getElementById("shader");
+        var gl = canvas.getContext("webgl");
+        var glfx = new Glfx(gl);
+        var start;
+        var intervalId;
+
+        function update() {
+          glfx.updateUniforms();
+          window.requestAnimationFrame(glfx.redraw);
+        }
+      
+        function reload() {
+          try {
+            window.clearInterval(intervalId);
+            glfx.programShader(shader.text);
+            start = Date.now();
+            glfx.bindUniform('t', gl.FLOAT, function () { return (Date.now() - start) * 1e-3; });
+            shaderScript.classList.remove("error");
+            intervalId = window.setInterval(update, 50);
+          }
+          catch (e) {
+            shaderScript.classList.add("error");
+          }
+        }
+
+        if (gl) {
+          reload();
+          shaderScript.oninput = reload;
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <canvas id="glcanvas" width="800" height="400">
+      Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.
+    </canvas>
+    <script id="shader" type="text/x-glsl" contenteditable>
+#define black rgb(0.0, 0.0, 0.0)
+#define white rgb(1.0, 1.0, 1.0)
+
+const vec2 foc0 = vec2(200.0, 200.0);
+const vec2 foc1 = vec2(600.0, 200.0);
+
+uniform float t;
+
+vec4 paint(float x, float y) {
+  vec2 pos = vec2(x, y);
+  float r0 = distance(pos, foc0) - 25.0 * t, r1 = distance(pos, foc1) + 15.0 * t;
+  return (mod(r0, 100.0) < 50.0 ^^ mod(r1, 100.0) < 50.0) ? black : white;
+}
+    </script>
+  </body>
+</head>
