@@ -19,8 +19,32 @@
         background-color: #600;
       }
     </style>
+    <script type="text/javascript">
+      window.onload = function () {
+        var canvas = document.getElementById("glcanvas");
+        var shaderScript = document.getElementById("shader");
+        var gl = canvas.getContext("webgl");
+        var glfx = new Glfx(gl);
+      
+        function reload() {
+          try {
+            glfx.programShader(shader.text);
+            glfx.redraw();
+            shaderScript.classList.remove("error");
+          }
+          catch (e) {
+            shaderScript.classList.add("error");
+          }
+        }
+      
+        if (gl) {
+          reload();
+          shaderScript.oninput = reload;
+        }
+      }
+    </script>
   </head>
-  <body onload="start()">
+  <body>
     <canvas id="glcanvas" width="800" height="400">
       Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.
     </canvas>
