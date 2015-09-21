@@ -1,10 +1,8 @@
-var glfx = {
+function Glfx(gl) {
 
-  ATTR_VPOSITION: 0,
+  const ATTR_VPOSITION = 0;
 
-  program: null,
-
-  compileShader: function (type, shaderSrc) {
+  function compileShader(type, shaderSrc) {
     var shader;
 
     shader = gl.createShader(type);
@@ -22,28 +20,32 @@ var glfx = {
     }
 
     return shader;
-  },
+  }
 
-  linkProgram: function (fragShader, vertShader) {
-    glfx.program = gl.createProgram();
-    gl.attachShader(glfx.program, fragShader);
-    gl.attachShader(glfx.program, vertShader);
-    gl.bindAttribLocation(glfx.program, glfx.ATTR_VPOSITION, "vPosition");
-    gl.linkProgram(glfx.program);
+  function linkProgram(fragShader, vertShader) {
+    var program = gl.createProgram();
+    
+    gl.attachShader(program, fragShader);
+    gl.attachShader(program, vertShader);
+    gl.bindAttribLocation(program, ATTR_VPOSITION, "vPosition");
+    gl.linkProgram(program);
 
-    if (!gl.getProgramParameter(glfx.program, gl.LINK_STATUS))
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS))
       throw "Failed to link program";
-  },
+    
+    return program;
+  }
 
-  buildProgram: function (fragShaderSrc, vertShaderSrc) {
+  function buildProgram(fragShaderSrc, vertShaderSrc) {
     var fragShader, vertShader;
 
-    fragShader = glfx.compileShader(gl.FRAGMENT_SHADER, fragShaderSrc);
-    vertShader = glfx.compileShader(gl.VERTEX_SHADER, vertShaderSrc);
-    glfx.linkProgram(fragShader, vertShader);
-  },
+    fragShader = compileShader(gl.FRAGMENT_SHADER, fragShaderSrc);
+    vertShader = compileShader(gl.VERTEX_SHADER, vertShaderSrc);
 
-  loadVertices: function () {
+    return linkProgram(fragShader, vertShader);
+  }
+
+  function loadVertices() {
     const vertices = [ -1.0, -1.0, 0.1,
                        -1.0, +1.0, 0.1,
                        +1.0, -1.0, 0.1,
@@ -53,11 +55,11 @@ var glfx = {
     buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-    gl.vertexAttribPointer(glfx.ATTR_VPOSITION, 3, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(glfx.ATTR_VPOSITION);
-  },
+    gl.vertexAttribPointer(ATTR_VPOSITION, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(ATTR_VPOSITION);
+  }
 
-  setup: function (shaderStr) {
+  this.programShader = function (shaderStr) {
 
     const fragShaderSrc = [
       "#line 1 0",
@@ -74,16 +76,16 @@ var glfx = {
       "void main() { gl_Position = vPosition; }"
     ].join('\n');
 
-    glfx.buildProgram(fragShaderSrc, vertShaderSrc);
-    gl.useProgram(glfx.program);
-    glfx.loadVertices();
-  },
+    this.program = buildProgram(fragShaderSrc, vertShaderSrc);
+    gl.useProgram(this.program);
+    loadVertices();
+  };
 
-  getUniformLocation: function (name) {
-    return gl.getUniformLocation(glfx.program, name);
-  },
+  this.getUniformLocation = function (name) {
+    return gl.getUniformLocation(this.program, name);
+  };
 
-  redraw: function () {
+  this.redraw = function () {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  }
-};
+  };
+}

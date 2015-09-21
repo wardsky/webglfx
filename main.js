@@ -1,24 +1,22 @@
-var gl; // A global variable for the WebGL context
-
 function start() {
-  var glcanvas = document.getElementById("glcanvas");
-  var frag = document.getElementById("frag");
+  var canvas = document.getElementById("glcanvas");
+  var shaderScript = document.getElementById("shader");
+  var gl = canvas.getContext("webgl");
+  var glfx = new Glfx(gl);
 
   function reload() {
     try {
-      glfx.setup(frag.text);
+      glfx.programShader(shader.text);
       glfx.redraw();
-      frag.classList.remove("error");
+      shaderScript.classList.remove("error");
     }
     catch (e) {
-      frag.classList.add("error");
+      shaderScript.classList.add("error");
     }
   }
 
-  gl = glcanvas.getContext("webgl");
-  
-  if (gl) 
+  if (gl) {
     reload();
-
-  frag.oninput = reload;
+    shaderScript.oninput = reload;
+  }
 }
