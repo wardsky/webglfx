@@ -60,8 +60,8 @@ function Glfx(gl) {
   }
 
   this.programShader = function (shaderStr) {
-    const fragShaderSrc = "precision mediump float;\n\n#define rgb(r, g, b) vec4(r, g, b, 1)\n\nvec4 paint(float, float);\n\nvoid main() {\n  gl_FragColor = paint(gl_FragCoord.x, gl_FragCoord.y);\n}\n\n#line 1 1\n" + shaderStr;
-    const vertShaderSrc = "attribute vec4 vPosition;\n\nvoid main() {\n  gl_Position = vPosition;\n}\n";
+    const fragShaderSrc = "<<glfx.frag.glsl>>" + shaderStr;
+    const vertShaderSrc = "<<glfx.vert.glsl>>";
 
     this.program = buildProgram(fragShaderSrc, vertShaderSrc);
     gl.useProgram(this.program);

@@ -1,0 +1,14 @@
+#!/usr/bin/perl -p
+
+# Look for instances of '<<filename>>' in the input and replace with the
+# contents of the named file, with newlines and quotes escaped.
+# Note: currently only works on the first instance of the pattern on each line.
+
+if (/<<(.*?)>>/) {
+  my $str;
+  do { open(F, "<", $1); $str = join('', <F>); close(F) };
+  $str =~ s/\n/\\n/g;
+  $str =~ s/"/\\"/g;
+  $str =~ s/'/\\'/g;
+  s/<<(.*?)>>/$str/;
+}
