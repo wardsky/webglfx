@@ -1,0 +1,24 @@
+body {
+  width: 800px;
+  margin: 0 auto;
+}
+
+canvas {
+ margin: 20px 0;
+}
+
+script[contenteditable] {
+  display: block;
+  white-space: pre;
+  font-family: monospace;
+}
+
+#shader {
+  padding: 0.6em;
+  color: #eee;
+  background-color: #222;
+}
+
+#shader.error {
+  background-color: #600;
+}
