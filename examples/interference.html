@@ -5,12 +5,25 @@
     <script src="glfx.js"></script>
     <link href="common.css" rel="stylesheet">
     <script type="text/javascript">
+      function Timer() {
+        this.elapsedTime = function () {
+          return 0;
+        }
+      }
+
+      Timer.prototype.reset = function () {
+        var startTime = Date.now();
+        this.elapsedTime = function () {
+          return Date.now() - startTime;
+        }
+      }
+
       window.onload = function () {
         var canvas = document.getElementById("glcanvas");
         var shaderScript = document.getElementById("shader");
         var gl = canvas.getContext("webgl");
         var glfx = new Glfx(gl);
-        var start;
+        var timer = new Timer();
         var intervalId;
 
         function update() {
@@ -22,8 +35,8 @@
           try {
             window.clearInterval(intervalId);
             glfx.programShader(shader.text);
-            start = Date.now();
-            glfx.bindUniform('t', gl.FLOAT, function () { return (Date.now() - start) * 1e-3; });
+            glfx.bindUniform('t', gl.FLOAT, function () { return timer.elapsedTime() * 1e-3; });
+            timer.reset();
             shaderScript.classList.remove("error");
             intervalId = window.setInterval(update, 50);
           }
