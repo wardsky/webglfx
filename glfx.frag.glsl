@@ -14,24 +14,17 @@ vec4 h(float hue) {
 }
 
 vec4 hs(float hue, float sat) {
-  vec4 result;
-  result.rgb = 0.5 * (1.0 - sat) + sat * h(hue).rgb;
-  result.a = 1.0;
-  return result;
+  return vec4(0.5 * (1.0 - sat) + sat * h(hue).rgb, 1.0);
 }
 
 vec4 hsl(float hue, float sat, float lux) {
-  vec4 result;
-  result.rgb = (lux < 0.0) ? (1.0 + lux) * hs(hue, sat).rgb : 1.0 - (1.0 - lux) * (1.0 - hs(hue, sat).rgb);
-  result.a = 1.0;
-  return result;
+  float val = fract(lux);
+  vec3 col = hs(hue, sat).rgb;
+  return vec4(lux < 0.0 ? val * col : 1.0 - (1.0 - val) * (1.0 - col), 1.0);
 }
 
 vec4 hsla(float hue, float sat, float lux, float a) {
-  vec4 result;
-  result.rgb = hsl(hue, sat, lux).rgb;
-  result.a = a;
-  return result;
+  return vec4(hsl(hue, sat, lux).rgb, a);
 }
 
 vec4 paint(float, float);
