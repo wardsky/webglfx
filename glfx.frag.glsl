@@ -10,6 +10,16 @@ precision mediump float;
 #define black gray(0)
 #define white gray(1)
 
+// A note on the colour space used:
+//
+// - Hue values (hue) are in radians.
+// - Saturation (sat) is in the range (-1, +1); 0 saturation generates a grey 
+//   value, +1 saturation a bright colour and -1 a bright but inverted colour.
+// - Lightness (lux) is also in the range (-1, +1); -1 yields black, +1 yields 
+//   white, and values near 0 yield midtones.
+//
+// Note that inverting the saturation is the same as rotating the hue by 180deg.
+
 float hcomp(float ang) {
   return clamp(abs((6.0 * mod(ang, TWO_PI) / TWO_PI) - 3.0) - 1.0, 0.0, 1.0);
 }
