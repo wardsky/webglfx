@@ -62,8 +62,7 @@ const vec2 foc1 = vec2(600.0, 200.0);
 
 uniform float t;
 
-vec4 paint(float x, float y) {
-  vec2 pos = vec2(x, y);
+vec4 paint(vec2 pos) {
   float r0 = distance(pos, foc0) - 25.0 * t, r1 = distance(pos, foc1) + 15.0 * t;
   return (mod(r0, 100.0) < 50.0 ^^ mod(r1, 100.0) < 50.0) ? black : white;
 }

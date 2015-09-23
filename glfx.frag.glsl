@@ -33,10 +33,10 @@ vec4 hsla(float hue, float sat, float lux, float a) {
   return vec4(hsl(hue, sat, lux).rgb, a);
 }
 
-vec4 paint(float, float);
+vec4 paint(vec2);
 
 void main() {
-  gl_FragColor = paint(gl_FragCoord.x, gl_FragCoord.y);
+  gl_FragColor = paint(gl_FragCoord.xy);
 }
 
 #line 1 1
