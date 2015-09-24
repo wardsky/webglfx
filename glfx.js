@@ -60,7 +60,7 @@ function Glfx(gl) {
   }
 
   this.programShader = function (shaderStr) {
-    const fragShaderSrc = "precision mediump float;\n\n#define TWO_PI 6.283185307179586\n\n#define rgb(r, g, b)     vec4(r, g, b, 1)\n#define rgba(r, g, b, a) vec4(r, g, b, a)\n\n#define gray(v) rgb(v, v, v)\n\n#define black gray(0)\n#define white gray(1)\n\nfloat hcomp(float ang) {\n  return clamp(abs((6.0 * mod(ang, TWO_PI) / TWO_PI) - 3.0) - 1.0, 0.0, 1.0);\n}\n\nvec4 h(float hue) {\n  float off = TWO_PI / 3.0;\n  return rgb(hcomp(hue), hcomp(hue - off), hcomp(hue - 2.0 * off));\n}\n\nvec4 hs(float hue, float sat) {\n  return vec4(0.5 * (1.0 - sat) + sat * h(hue).rgb, 1);\n}\n\nvec4 hsl(float hue, float sat, float lux) {\n  float val = fract(lux);\n  vec3 col = hs(hue, sat).rgb;\n  return vec4(lux < 0.0 ? val * col : 1.0 - (1.0 - val) * (1.0 - col), 1);\n}\n\nvec4 hsla(float hue, float sat, float lux, float a) {\n  return vec4(hsl(hue, sat, lux).rgb, a);\n}\n\nvec4 paint(vec2);\n\nvoid main() {\n  gl_FragColor = paint(gl_FragCoord.xy);\n}\n\n#line 1 1\n" + shaderStr;
+    const fragShaderSrc = "precision mediump float;\n\n#define TWO_PI 6.283185307179586\n\n#define rgb(r, g, b)     vec4(r, g, b, 1)\n#define rgba(r, g, b, a) vec4(r, g, b, a)\n\n#define gray(v) rgb(v, v, v)\n\n#define black gray(0)\n#define white gray(1)\n\n// A note on the colour space used:\n//\n// - Hue values (hue) are in radians.\n// - Saturation (sat) is in the range (-1, +1); 0 saturation generates a grey \n//   value, +1 saturation a bright colour and -1 a bright but inverted colour.\n// - Lightness (lux) is also in the range (-1, +1); -1 yields black, +1 yields \n//   white, and values near 0 yield midtones.\n//\n// Note that inverting the saturation is the same as rotating the hue by 180deg.\n\nfloat hcomp(float ang) {\n  return clamp(abs((6.0 * mod(ang, TWO_PI) / TWO_PI) - 3.0) - 1.0, 0.0, 1.0);\n}\n\nvec4 h(float hue) {\n  float off = TWO_PI / 3.0;\n  return rgb(hcomp(hue), hcomp(hue - off), hcomp(hue - 2.0 * off));\n}\n\nvec4 hs(float hue, float sat) {\n  return vec4(0.5 * (1.0 - sat) + sat * h(hue).rgb, 1);\n}\n\nvec4 hsl(float hue, float sat, float lux) {\n  float val = fract(lux);\n  vec3 col = hs(hue, sat).rgb;\n  return vec4(lux < 0.0 ? val * col : 1.0 - (1.0 - val) * (1.0 - col), 1);\n}\n\nvec4 hsla(float hue, float sat, float lux, float a) {\n  return vec4(hsl(hue, sat, lux).rgb, a);\n}\n\nvec4 paint(vec2);\n\nvoid main() {\n  gl_FragColor = paint(gl_FragCoord.xy);\n}\n\n#line 1 1\n" + shaderStr;
     const vertShaderSrc = "attribute vec4 vPosition;\n\nvoid main() {\n  gl_Position = vPosition;\n}\n";
 
     this.program = buildProgram(fragShaderSrc, vertShaderSrc);
@@ -85,9 +85,10 @@ function Glfx(gl) {
   this.updateUniforms = function () {
     for (var name in this.uniformDirectory) {
       var uniform = this.uniformDirectory[name];
+      var value = typeof uniform.binding === 'function' ? uniform.binding() : uniform.binding;
       switch (uniform.type) {
       case gl.FLOAT:
-        gl.uniform1f(uniform.loc, uniform.binding());
+        gl.uniform1f(uniform.loc, value);
       }
     }
   };

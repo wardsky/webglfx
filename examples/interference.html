@@ -35,6 +35,8 @@
           try {
             window.clearInterval(intervalId);
             glfx.programShader(shader.text);
+            glfx.bindUniform('width', gl.FLOAT, 800);
+            glfx.bindUniform('height', gl.FLOAT, 400);
             glfx.bindUniform('t', gl.FLOAT, function () { return timer.elapsedTime() * 1e-3; });
             timer.reset();
             shaderScript.classList.remove("error");
@@ -57,10 +59,11 @@
       Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.
     </canvas>
     <script id="shader" type="text/x-glsl" contenteditable>
-const vec2 foc0 = vec2(200.0, 200.0);
-const vec2 foc1 = vec2(600.0, 200.0);
-
+uniform float width, height;
 uniform float t;
+
+vec2 foc0 = vec2(0.25 * width, 0.5 * height);
+vec2 foc1 = vec2(0.75 * width, 0.5 * height);
 
 vec4 paint(vec2 pos) {
   float r0 = distance(pos, foc0) - 25.0 * t, r1 = distance(pos, foc1) + 15.0 * t;

@@ -85,9 +85,10 @@ function Glfx(gl) {
   this.updateUniforms = function () {
     for (var name in this.uniformDirectory) {
       var uniform = this.uniformDirectory[name];
+      var value = typeof uniform.binding === 'function' ? uniform.binding() : uniform.binding;
       switch (uniform.type) {
       case gl.FLOAT:
-        gl.uniform1f(uniform.loc, uniform.binding());
+        gl.uniform1f(uniform.loc, value);
       }
     }
   };
