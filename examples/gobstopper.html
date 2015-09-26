@@ -55,7 +55,7 @@
     </script>
   </head>
   <body>
-    <canvas id="glcanvas" width="800" height="400">
+    <canvas id="glcanvas" width="1600" height="1600">
       Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.
     </canvas>
     <textarea id="shader" rows="20">
@@ -68,8 +68,8 @@ vec2 centre = vec2(0.5 * width, 0.5 * height);
 
 vec4 paint(vec2 pos) {
   float r = distance(pos, centre);
-  float i = floor(pow(r * 1e-2, 2.0));
-  return h(TWO_PI * phi * i - t);
+  float s = pow(r * 5e-3, 2.0);
+  return (s &lt; 12.0) ? h(TWO_PI * phi * (floor(s) + 0.02 * fract(s)) - t) : white;
 }
     </textarea>
   </body>
