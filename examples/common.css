@@ -7,10 +7,11 @@ canvas {
  margin: 20px 0;
 }
 
-script[contenteditable] {
-  display: block;
-  white-space: pre;
-  font-family: monospace;
+textarea {
+  box-sizing: border-box;
+  width: 100%;
+  border: none;
+  resize: none;
 }
 
 #shader {

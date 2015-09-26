@@ -7,24 +7,24 @@
     <script type="text/javascript">
       window.onload = function () {
         var canvas = document.getElementById("glcanvas");
-        var shaderScript = document.getElementById("shader");
+        var shaderText = document.getElementById("shader");
         var gl = canvas.getContext("webgl");
         var glfx = new Glfx(gl);
       
         function reload() {
           try {
-            glfx.programShader(shader.text);
+            glfx.programShader(shaderText.value);
             glfx.redraw();
-            shaderScript.classList.remove("error");
+            shaderText.classList.remove("error");
           }
           catch (e) {
-            shaderScript.classList.add("error");
+            shaderText.classList.add("error");
           }
         }
       
         if (gl) {
           reload();
-          shaderScript.oninput = reload;
+          shaderText.oninput = reload;
         }
       }
     </script>
@@ -33,19 +33,19 @@
     <canvas id="glcanvas" width="800" height="400">
       Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.
     </canvas>
-    <script id="shader" type="text/x-glsl" contenteditable>
+    <textarea id="shader" rows="20">
 #define red   rgb(0.8, 0.0, 0.0)
 #define blue  rgb(0.0, 0.0, 0.4)
 
 vec4 paint(vec2 pos) {
-  if ((pos.x > 200.0 + pos.y) && (pos.x < 600.0 - pos.y))
+  if ((pos.x &gt; 200.0 + pos.y) &amp;&amp; (pos.x &lt; 600.0 - pos.y))
     return red;
-  if (pos.x < pos.y)
+  if (pos.x &lt; pos.y)
     return black;
-  if (pos.x > 800.0 - pos.y)
+  if (pos.x &gt; 800.0 - pos.y)
     return blue;
   return white;
 }
-    </script>
+    </textarea>
   </body>
 </head>
