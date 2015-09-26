@@ -62,12 +62,14 @@
 uniform float width, height;
 uniform float t;
 
-vec2 foc0 = vec2(0.25 * width, 0.5 * height);
-vec2 foc1 = vec2(0.75 * width, 0.5 * height);
+const float phi = 1.618033988749895;
+
+vec2 centre = vec2(0.5 * width, 0.5 * height);
 
 vec4 paint(vec2 pos) {
-  float r0 = distance(pos, foc0) - 25.0 * t, r1 = distance(pos, foc1) + 15.0 * t;
-  return (mod(r0, 100.0) &lt; 50.0 ^^ mod(r1, 100.0) &lt; 50.0) ? black : white;
+  float r = distance(pos, centre);
+  float i = floor(pow(r * 1e-2, 2.0));
+  return h(TWO_PI * phi * i - t);
 }
     </textarea>
   </body>
