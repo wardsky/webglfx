@@ -24,7 +24,7 @@ function Glfx(gl) {
 
   function linkProgram(fragShader, vertShader) {
     var program = gl.createProgram();
-    
+
     gl.attachShader(program, fragShader);
     gl.attachShader(program, vertShader);
     gl.bindAttribLocation(program, ATTR_VPOSITION, "vPosition");
@@ -32,7 +32,7 @@ function Glfx(gl) {
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS))
       throw "Failed to link program";
-    
+
     return program;
   }
 
@@ -46,12 +46,12 @@ function Glfx(gl) {
   }
 
   function loadVertices() {
-    const vertices = [ -1.0, -1.0, 0.1,
-                       -1.0, +1.0, 0.1,
-                       +1.0, -1.0, 0.1,
-                       +1.0, +1,0, 0.1 ];
+    const vertices = [ -1.0, -1.0, 0.0,
+                       -1.0, +1.0, 0.0,
+                       +1.0, -1.0, 0.0,
+                       +1.0, +1,0, 0.0 ];
     var buffer;
-    
+
     buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
